@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:16
+    container_name: quote-db
+    environment:
+      POSTGRES_DB: quote_db
+      POSTGRES_USER: quote_user
+      POSTGRES_PASSWORD: quote_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./db/data.sql:/docker-entrypoint-initdb.d/02-data.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quote_user -d quote_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    container_name: quote-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/quote_db
+      SPRING_DATASOURCE_USERNAME: quote_user
+      SPRING_DATASOURCE_PASSWORD: quote_pass
+      SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: quote-frontend
+    depends_on:
+      - backend
+    environment:
+      VITE_PROXY_TARGET: http://backend:8080
+    ports:
+      - "5173:5173"
+
+volumes:
+  postgres-data:
