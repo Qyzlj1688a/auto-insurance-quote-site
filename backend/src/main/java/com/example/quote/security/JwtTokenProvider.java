@@ -9,7 +9,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Lightweight stateless Token provider using HmacSHA256 algorithm.
+ * HmacSHA256アルゴリズムを使用した軽量なステートレストークンプロバイダー。
  */
 @Component
 public class JwtTokenProvider {
@@ -37,7 +37,7 @@ public class JwtTokenProvider {
             byte[] decodedBytes = Base64.getUrlDecoder().decode(token);
             String decoded = new String(decodedBytes, StandardCharsets.UTF_8);
 
-            // Locate the last dot separating signature
+            // 署名を分離する最後のドット位置を特定
             int lastDot = decoded.lastIndexOf('.');
             if (lastDot == -1) {
                 return null;
@@ -45,7 +45,7 @@ public class JwtTokenProvider {
             String signature = decoded.substring(lastDot + 1);
             String payload = decoded.substring(0, lastDot);
 
-            // Locate the second to last dot separating expiry
+            // 有効期限を分離する2番目のドット位置を特定
             int secondLastDot = payload.lastIndexOf('.');
             if (secondLastDot == -1) {
                 return null;
@@ -55,7 +55,7 @@ public class JwtTokenProvider {
 
             long expiry = Long.parseLong(expiryStr);
             if (System.currentTimeMillis() > expiry) {
-                return null; // Token expired
+                return null; // 有効期限切れのトークン
             }
 
             String expectedSignature = sign(username + "." + expiry);

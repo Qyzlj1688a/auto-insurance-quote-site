@@ -1,7 +1,7 @@
 package com.example.quote.dto.response;
 
 /**
- * Field-level validation error response.
+ * フィールド単位の単体バリデーションエラー詳細を保持するレスポンスDTOクラス。
  */
 public class FieldErrorResponse {
 

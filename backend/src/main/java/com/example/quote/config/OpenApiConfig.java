@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * OpenAPI definition configuration.
+ * Swagger/OpenAPI 定義情報を生成するための設定クラス。
  */
 @Configuration
 public class OpenApiConfig {

@@ -3,7 +3,7 @@ package com.example.quote.dto.request;
 import jakarta.validation.constraints.NotBlank;
 
 /**
- * Administrator login request.
+ * 管理者ログイン要求パラメータのDTOクラス。
  */
 public class AdminLoginRequest {
 

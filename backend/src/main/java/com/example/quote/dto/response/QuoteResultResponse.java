@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Quote result response DTO.
+ * 見積作成結果および詳細情報を返却するレスポンスDTOクラス。
  */
 public class QuoteResultResponse {
 
@@ -12,7 +12,7 @@ public class QuoteResultResponse {
     private Integer annualPremium;
     private Integer monthlyPremium;
     private List<BreakdownResponse> breakdowns;
-    private String createdAt; // ISO-8601 format
+    private String createdAt; // ISO-8601形式の作成日時
     private Integer driverAge;
     private String licenseColor;
     private String usageType;
@@ -79,7 +79,7 @@ public class QuoteResultResponse {
         }
     }
 
-    // Getters and Setters
+    // ゲッターとセッター
     public String getQuoteNo() {
         return quoteNo;
     }

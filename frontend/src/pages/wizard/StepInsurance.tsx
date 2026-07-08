@@ -17,7 +17,7 @@ export const StepInsurance: React.FC<StepInsuranceProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  // Reset grade and accidentTerm if user chooses false (not insured)
+  // 他社加入なしを選択した場合、等級と事故有期間をリセット
   const handleInsuranceChange = (hasInsurance: boolean) => {
     setTouched({});
     setErrors({});
@@ -74,7 +74,7 @@ export const StepInsurance: React.FC<StepInsuranceProps> = ({
     }
   };
 
-  // Determine form validity
+  // フォーム全体の入力検証状態を確認
   const isFormValid =
     data.hasCurrentInsurance !== null &&
     (data.hasCurrentInsurance === false ||
@@ -129,7 +129,7 @@ export const StepInsurance: React.FC<StepInsuranceProps> = ({
             </div>
           </div>
 
-          {/* Conditional Fields for Insured Users */}
+          {/* 他社加入ありの場合のみ表示する条件付き入力項目 */}
           {data.hasCurrentInsurance === true && (
             <div className="conditional-fields" style={{ animation: "slideIn 0.3s ease-out" }}>
               {/* Grade */}
@@ -171,7 +171,7 @@ export const StepInsurance: React.FC<StepInsuranceProps> = ({
           )}
         </div>
 
-        {/* Sidebar Help */}
+        {/* サイドバーのヘルプガイド */}
         <div className="help-sidebar">
           <h3>ℹ️ 等級制度について</h3>
           <p style={{ marginBottom: "12px" }}>

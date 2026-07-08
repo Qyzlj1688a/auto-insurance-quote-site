@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 /**
- * Quote entity.
+ * 見積情報エンティティ。
  */
 @Entity
 @Table(name = "quotes")

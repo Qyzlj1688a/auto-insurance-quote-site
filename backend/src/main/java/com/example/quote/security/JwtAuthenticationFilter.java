@@ -12,7 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * Filter to intercept HTTP requests and validate Jwt tokens.
+ * リクエスト毎にJWTトークンを検証し、Spring Securityの認証コンテキストを確立するフィルター。
  */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 

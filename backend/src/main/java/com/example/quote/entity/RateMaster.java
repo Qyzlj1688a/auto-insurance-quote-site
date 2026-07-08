@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 
 /**
- * Rate master entity.
+ * 保険料率マスタエンティティ。
  */
 @Entity
 @Table(name = "rate_masters")

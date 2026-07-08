@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 
 /**
- * Quote breakdown entity.
+ * 見積計算内訳エンティティ。
  */
 @Entity
 @Table(name = "quote_breakdowns")

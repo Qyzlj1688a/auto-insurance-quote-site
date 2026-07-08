@@ -67,7 +67,7 @@ export const StepTop: React.FC<StepTopProps> = ({ onNext, onLookupSuccess }) => 
         </button>
       </div>
 
-      {/* Quote Lookup Area */}
+      {/* 見積呼び出しエリア */}
       <div style={{
         marginTop: "40px",
         paddingTop: "32px",

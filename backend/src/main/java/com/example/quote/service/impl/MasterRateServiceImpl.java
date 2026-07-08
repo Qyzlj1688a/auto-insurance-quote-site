@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Rate master service implementation.
+ * 保険料率マスタサービス実装クラス。
  */
 @Service
 public class MasterRateServiceImpl implements MasterRateService {

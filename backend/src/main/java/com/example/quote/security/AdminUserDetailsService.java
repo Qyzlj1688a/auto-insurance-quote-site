@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * UserDetailsService backed by admin_users.
+ * admin_usersテーブルの情報を基にSpring Securityの認証ユーザー情報をロードするサービスクラス。
  */
 @Service
 public class AdminUserDetailsService implements UserDetailsService {

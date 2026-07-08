@@ -7,7 +7,7 @@ const api = axios.create({
   },
 });
 
-// Interceptor to attach JWT Bearer token if available
+// 管理者ログイン用のJWTトークンが存在する場合、Authorizationヘッダーへ自動付与するリクエストインターセプター
 api.interceptors.request.use((config) => {
   const token = sessionStorage.getItem('adminToken');
   if (token) {

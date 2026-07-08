@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Premium calculation engine implementation.
+ * 保険料計算エンジン実装クラス。
  */
 @Component
 public class PremiumCalculatorImpl implements PremiumCalculator {
 
     @Override
     public QuoteCalculationResult calculate(QuoteCreateRequest request, List<RateMaster> rates) {
-        // Group rates into Map<Category, Map<ItemCode, RateMaster>>
+        // 料率マスタをカテゴリおよびアイテムコードでグルーピングしてマッピング
         Map<String, Map<String, RateMaster>> lookup = new HashMap<>();
         for (RateMaster rm : rates) {
             lookup.computeIfAbsent(rm.getCategory(), k -> new HashMap<>()).put(rm.getItemCode(), rm);
@@ -33,39 +33,39 @@ public class PremiumCalculatorImpl implements PremiumCalculator {
         List<QuoteBreakdown> breakdowns = new ArrayList<>();
         int displayOrder = 1;
 
-        // 1. Base Premium
+        // 1. 基本保険料の取得
         RateMaster baseMaster = getRateMaster(lookup, "BASE_PREMIUM", "BASE");
         BigDecimal currentPremium = BigDecimal.valueOf(baseMaster.getAmount());
         breakdowns.add(createBreakdown(baseMaster, displayOrder++));
 
-        // 2. Driver Age
+        // 2. 運転者年齢の料率適用
         String ageCode = getAgeCode(request.getDriverAge());
         RateMaster ageMaster = getRateMaster(lookup, "AGE", ageCode);
         currentPremium = currentPremium.multiply(ageMaster.getRate());
         breakdowns.add(createBreakdown(ageMaster, displayOrder++));
 
-        // 3. License Color
+        // 3. 免許証色の料率適用
         RateMaster licenseMaster = getRateMaster(lookup, "LICENSE", request.getLicenseColor());
         currentPremium = currentPremium.multiply(licenseMaster.getRate());
         breakdowns.add(createBreakdown(licenseMaster, displayOrder++));
 
-        // 4. Usage Type
+        // 4. 使用目的の料率適用
         RateMaster usageMaster = getRateMaster(lookup, "USAGE", request.getUsageType());
         currentPremium = currentPremium.multiply(usageMaster.getRate());
         breakdowns.add(createBreakdown(usageMaster, displayOrder++));
 
-        // 5. Annual Mileage
+        // 5. 年間走行距離の料率適用
         String mileageCode = getMileageCode(request.getAnnualMileage());
         RateMaster mileageMaster = getRateMaster(lookup, "MILEAGE", mileageCode);
         currentPremium = currentPremium.multiply(mileageMaster.getRate());
         breakdowns.add(createBreakdown(mileageMaster, displayOrder++));
 
-        // 6. Driver Range
+        // 6. 運転者範囲による料率の乗算
         RateMaster rangeMaster = getRateMaster(lookup, "DRIVER_RANGE", request.getDriverRange());
         currentPremium = currentPremium.multiply(rangeMaster.getRate());
         breakdowns.add(createBreakdown(rangeMaster, displayOrder++));
 
-        // 7. Grade (only if hasCurrentInsurance is true)
+        // 7. 等級による料率の乗算（他社加入ありの場合のみ）
         if (Boolean.TRUE.equals(request.getHasCurrentInsurance())) {
             String gradeCode = getGradeCode(request.getGrade());
             RateMaster gradeMaster = getRateMaster(lookup, "GRADE", gradeCode);
@@ -73,7 +73,7 @@ public class PremiumCalculatorImpl implements PremiumCalculator {
             breakdowns.add(createBreakdown(gradeMaster, displayOrder++));
         }
 
-        // 8. Accident Term (only if hasCurrentInsurance is true)
+        // 8. 事故有係数適用期間による料率の乗算（他社加入ありの場合のみ）
         if (Boolean.TRUE.equals(request.getHasCurrentInsurance())) {
             String termCode = getAccidentTermCode(request.getAccidentTerm());
             RateMaster termMaster = getRateMaster(lookup, "ACCIDENT_TERM", termCode);
@@ -81,46 +81,46 @@ public class PremiumCalculatorImpl implements PremiumCalculator {
             breakdowns.add(createBreakdown(termMaster, displayOrder++));
         }
 
-        // 9. Vehicle Type
+        // 9. 車両タイプによる料率の乗算
         RateMaster typeMaster = getRateMaster(lookup, "VEHICLE_TYPE", request.getVehicleType());
         currentPremium = currentPremium.multiply(typeMaster.getRate());
         breakdowns.add(createBreakdown(typeMaster, displayOrder++));
 
-        // 10. Vehicle Insurance Addition
+        // 10. 車両保険付帯による加算額の適用
         RateMaster vehicleInsMaster = getRateMaster(lookup, "VEHICLE_INSURANCE", request.getVehicleInsurance().toString().toUpperCase());
         int vehicleInsAmount = vehicleInsMaster.getAmount();
         breakdowns.add(createBreakdown(vehicleInsMaster, displayOrder++));
 
-        // 11. Property Damage Limit Addition
+        // 11. 対物賠償制限額による加算額の適用
         RateMaster propertyDamageMaster = getRateMaster(lookup, "PROPERTY_DAMAGE_LIMIT", request.getPropertyDamageLimit());
         int propertyDamageAmount = propertyDamageMaster.getAmount();
         breakdowns.add(createBreakdown(propertyDamageMaster, displayOrder++));
 
-        // 12. Personal Injury Amount Addition
+        // 12. 人身傷害補償額による加算額の適用
         RateMaster personalInjuryMaster = getRateMaster(lookup, "PERSONAL_INJURY_AMOUNT", request.getPersonalInjuryAmount());
         int personalInjuryAmount = personalInjuryMaster.getAmount();
         breakdowns.add(createBreakdown(personalInjuryMaster, displayOrder++));
 
-        // 13. Lawyer Option Addition
+        // 13. 弁護士費用特約による加算額の適用
         RateMaster lawyerMaster = getRateMaster(lookup, "LAWYER_OPTION", request.getLawyerOption().toString().toUpperCase());
         int lawyerAmount = lawyerMaster.getAmount();
         breakdowns.add(createBreakdown(lawyerMaster, displayOrder++));
 
-        // 14. Road Service Addition
+        // 14. ロードサービスによる加算額の適用
         RateMaster roadServiceMaster = getRateMaster(lookup, "ROAD_SERVICE", request.getRoadService().toString().toUpperCase());
         int roadServiceAmount = roadServiceMaster.getAmount();
         breakdowns.add(createBreakdown(roadServiceMaster, displayOrder++));
 
-        // Calculate sum of additions
+        // 加算型補償・特約金額の合計を算出
         int totalAdditions = vehicleInsAmount + propertyDamageAmount + personalInjuryAmount + lawyerAmount + roadServiceAmount;
 
-        // Raw Annual Premium = Multiplied Premium + Additions
+        // 年間保険料＝係数乗算後の保険料＋加算額の合計
         BigDecimal rawAnnualPremium = currentPremium.add(BigDecimal.valueOf(totalAdditions));
 
-        // Round to nearest 10 yen (10円未満を四捨五入)
+        // 10円未満を四捨五入（年間保険料）
         int annualPremium = rawAnnualPremium.setScale(-1, RoundingMode.HALF_UP).intValue();
 
-        // Monthly Premium = Annual Premium / 12, then round to nearest 10 yen (10円未満を四捨五入)
+        // 月額保険料＝年間保険料÷12、10円未満を四捨五入
         int monthlyPremium = BigDecimal.valueOf(annualPremium)
                 .divide(BigDecimal.valueOf(12), 4, RoundingMode.HALF_UP)
                 .setScale(-1, RoundingMode.HALF_UP)

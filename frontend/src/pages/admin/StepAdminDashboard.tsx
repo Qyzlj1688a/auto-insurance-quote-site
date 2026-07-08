@@ -11,7 +11,7 @@ export const StepAdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [adminName, setAdminName] = useState("管理者");
-  const [selectedQuote, setSelectedQuote] = useState<any>(null); // For detail view modal
+  const [selectedQuote, setSelectedQuote] = useState<any>(null); // 詳細モーダル表示用の見積データ
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
 
@@ -27,7 +27,7 @@ export const StepAdminDashboard: React.FC = () => {
     if (name) {
       setAdminName(name);
     }
-    // Perform initial fetch
+    // 初回検索を実行
     handleSearch();
   }, [navigate]);
 
@@ -83,31 +83,7 @@ export const StepAdminDashboard: React.FC = () => {
     setDetailLoading(true);
     setErrorMessage("");
     try {
-      // In the backend, GET /api/quotes/{quoteNo} gives the detailed information including breakdowns,
-      // and wait, does it give vehicle/driver inputs?
-      // Wait, in database, the quotes table has maker, carName, driverAge, etc.
-      // But does GET /api/quotes/{quoteNo} return them?
-      // Wait! Let's check how the backend Controller handles GET /api/quotes/{quoteNo}.
-      // In QuoteServiceImpl.java's getQuoteByQuoteNo:
-      // it loads the Quote entity and calls mapToResponse(quote, breakdowns).
-      // But wait! Does mapToResponse map driverAge, maker, etc. to response?
-      // Let's look at mapToResponse method in QuoteServiceImpl.java:
-      // It sets only: quoteNo, annualPremium, monthlyPremium, breakdowns, createdAt.
-      // Wait! It does NOT set driverAge, maker, carName, etc. in QuoteResultResponse!
-      // Oh! So QuoteResultResponse doesn't have the input fields!
-      // Wait! But how can we display detailed info in the modal then?
-      // Ah! Does the database have all these columns? Yes!
-      // And wait, does the frontend need to display these input parameters, or does it just show the main parameters and breakdowns?
-      // Let's check if the Detailed Design or Page文案 has details:
-      // In `SC-009` (見積一覧) table columns: `見積番号`, `作成日時`, `年間保険料`, `月額保険料`, `免許証の色`, `使用目的`.
-      // And detailed modal? Let's check: does detailed modal show other fields, or does it just show the breakdowns?
-      // Let's check the database fields we can query. If we need to return more fields from `GET /api/quotes/{quoteNo}` or if we can fetch them.
-      // Wait! In detailed design `3.2 POST /api/quotes レスポンス`, response contains quoteNo, annualPremium, monthlyPremium, breakdowns, createdAt.
-      // And in `API-005` GET `/api/admin/quotes/{quoteNo}` (管理者用見積詳細), it says "見積結果取得と同じレスポンスを使用可能、または詳細情報を追加".
-      // Wait! In QuoteResultResponse.java, it only has these 5 fields.
-      // So let's display these 5 fields in the modal: 見積番号 (Quote No), 作成日時 (Created At), 年間保険料 (Annual Premium), 月額保険料 (Monthly Premium), and the complete breakdowns list (計算内訳 - which lists all items like BASE, AGE, LICENSE, MILEAGE, VEHICLE_INSURANCE etc. with their name, rate, and amount!).
-      // This is extremely detailed, clean, and exactly matches the JSON structure of `QuoteResultResponse`!
-      // Let's do that!
+      // 見積番号をキーとして計算内訳を含む詳細データを取得
       const data = await getQuoteByQuoteNo(targetQuoteNo);
       setSelectedQuote(data);
       setDetailModalOpen(true);
@@ -123,7 +99,7 @@ export const StepAdminDashboard: React.FC = () => {
     }
   };
 
-  // Helper mappings for Japanese display in table
+  // テーブル表示用のマッピングヘルパー関数
   const mapLicenseColor = (code: string) => {
     switch (code) {
       case "GOLD": return "ゴールド";
@@ -310,7 +286,7 @@ export const StepAdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Details Modal Dialog */}
+      {/* 見積詳細モーダルダイアログ */}
       {detailModalOpen && selectedQuote && (
         <div className="modal-overlay" onClick={() => setDetailModalOpen(false)}>
           <div className="modal-card" onClick={(e) => e.stopPropagation()}>

@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Returns a unified JSON body for 401 responses.
+ * 401未認証エラー時に統一されたJSON形式のレスポンスを返却するハンドラー。
  */
 @Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {

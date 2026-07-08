@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * Controller for administrative quote operations.
+ * 管理者向けの見積検索・詳細取得・CSV出力APIコントローラー。
  */
 @Tag(name = "管理用見積API", description = "管理者用の見積情報検索・詳細取得・CSV出力API")
 @RestController
@@ -32,7 +32,7 @@ public class AdminQuoteController {
     }
 
     /**
-     * Searches quotes based on filters.
+     * 指定された検索条件（見積番号、作成期間）に基づいて見積一覧を検索します。
      */
     @Operation(summary = "見積一覧検索", description = "見積番号や作成日時（期間）を指定して見積情報を検索します。")
     @GetMapping("/quotes")
@@ -48,7 +48,7 @@ public class AdminQuoteController {
     }
 
     /**
-     * Gets a single quote details.
+     * 見積番号をキーとして、特定の見積詳細情報および計算内訳を取得します。
      */
     @Operation(summary = "見積詳細取得", description = "見積番号をキーとして見積詳細および計算内訳を取得します。")
     @GetMapping("/quotes/{quoteNo}")
@@ -60,7 +60,7 @@ public class AdminQuoteController {
     }
 
     /**
-     * Exports quotes matching filters as CSV.
+     * 検索条件に合致する見積一覧情報をCSVファイルストリームとしてエクスポートします。
      */
     @Operation(summary = "見積一覧CSV出力", description = "条件に合致する見積一覧情報を日文CSV形式で出力します。")
     @GetMapping(value = "/quotes.csv", produces = "text/csv")

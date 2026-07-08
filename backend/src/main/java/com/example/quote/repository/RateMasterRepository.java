@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 /**
- * Rate master repository.
+ * 保険料率マスタ用リポジトリインターフェース。
  */
 public interface RateMasterRepository extends JpaRepository<RateMaster, Long> {
 

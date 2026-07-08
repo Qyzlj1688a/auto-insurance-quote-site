@@ -4,7 +4,7 @@ import com.example.quote.dto.request.AdminLoginRequest;
 import com.example.quote.dto.response.AdminLoginResponse;
 
 /**
- * Administrator authentication service contract.
+ * 管理者認証サービスインターフェース。
  */
 public interface AdminAuthService {
 

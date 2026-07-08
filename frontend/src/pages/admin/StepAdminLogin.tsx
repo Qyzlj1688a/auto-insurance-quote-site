@@ -21,13 +21,13 @@ export const StepAdminLogin: React.FC = () => {
     setLoading(true);
     try {
       const response = await adminLogin({ loginId, password });
-      // Save server-issued JWT token
+      // サーバーから発行されたJWTトークンを保存
       if (response.token) {
         sessionStorage.setItem("adminToken", response.token);
       }
       sessionStorage.setItem("adminName", response.displayName || "管理者");
 
-      // Navigate to admin dashboard quotes listing
+      // 管理者用見積一覧ダッシュボードへ遷移
       navigate("/admin/quotes");
     } catch (error: any) {
       if (error.response && error.response.status === 401) {

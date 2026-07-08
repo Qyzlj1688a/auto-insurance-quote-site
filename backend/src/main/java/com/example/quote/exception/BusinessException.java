@@ -3,7 +3,7 @@ package com.example.quote.exception;
 import org.springframework.http.HttpStatus;
 
 /**
- * Base business exception.
+ * 業務例外を表す共通ビジネス例外クラス。
  */
 public class BusinessException extends RuntimeException {
 

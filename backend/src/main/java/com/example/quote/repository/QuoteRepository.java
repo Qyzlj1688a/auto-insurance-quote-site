@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Quote repository.
+ * 見積情報用リポジトリインターフェース。
  */
 public interface QuoteRepository extends JpaRepository<Quote, Long> {
 

@@ -67,7 +67,7 @@ export const StepConfirm: React.FC<StepConfirmProps> = ({
     setLoading(true);
     setErrorMessage(null);
 
-    // Prepare payload (convert empty fields to backend standards)
+    // 送信データの調整（他社加入状況に応じた不要パラメータのクリア）
     const payload: QuoteCreateRequest = {
       ...data,
       grade: data.hasCurrentInsurance ? data.grade : "",
@@ -105,9 +105,9 @@ export const StepConfirm: React.FC<StepConfirmProps> = ({
       )}
 
       <div className="summary-container">
-        {/* Left column: input summary */}
+        {/* 左側カラム：入力内容の要約 */}
         <div className="summary-blocks">
-          {/* User Info */}
+          {/* 使用者情報 */}
           <div className="summary-section">
             <div className="summary-section-title">
               <span>使用者情報</span>
@@ -137,7 +137,7 @@ export const StepConfirm: React.FC<StepConfirmProps> = ({
             </div>
           </div>
 
-          {/* Insurance */}
+          {/* 契約中保険 */}
           <div className="summary-section">
             <div className="summary-section-title">
               <span>契約中保険</span>
@@ -163,7 +163,7 @@ export const StepConfirm: React.FC<StepConfirmProps> = ({
             )}
           </div>
 
-          {/* Vehicle Info */}
+          {/* 車両情報 */}
           <div className="summary-section">
             <div className="summary-section-title">
               <span>車両情報</span>
@@ -193,7 +193,7 @@ export const StepConfirm: React.FC<StepConfirmProps> = ({
             </div>
           </div>
 
-          {/* Coverages */}
+          {/* 補償条件 */}
           <div className="summary-section" style={{ borderBottom: "none" }}>
             <div className="summary-section-title">
               <span>補償条件</span>
@@ -224,7 +224,7 @@ export const StepConfirm: React.FC<StepConfirmProps> = ({
           </div>
         </div>
 
-        {/* Right column: Action Sidebar */}
+        {/* 右側カラム：お見積り実行サイドバー */}
         <div className="price-sidebar">
           <div className="price-sidebar-title">概算保険料</div>
           <div className="price-row" style={{ display: "flex", alignItems: "baseline" }}>

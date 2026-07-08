@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Service implementation for quotes handling database transactions and calculations.
+ * 見積関連のデータ永続化および計算を処理するサービスクラス。
  */
 @Service
 @Transactional
@@ -53,19 +53,19 @@ public class QuoteServiceImpl implements QuoteService {
 
     @Override
     public QuoteResultResponse createQuote(QuoteCreateRequest request) {
-        // 1. Domain Validation
+        // 1. 相関バリデーションチェックの実行
         validateRequest(request);
 
-        // 2. Fetch all active rate masters (Single DB query strategy)
+        // 2. 有効なすべての料率マスタを取得（単一クエリによるフェッチ戦略）
         List<RateMaster> activeRates = rateMasterRepository.findByActiveTrueOrderByCategoryAscIdAsc();
 
-        // 3. Delegate premium calculation to memory calculation engine
+        // 3. メモリ内の計算エンジンへ保険料計算処理を委譲
         QuoteCalculationResult calcResult = premiumCalculator.calculate(request, activeRates);
 
-        // 4. Generate unique quote number: EST + yyyyMMdd + 4-digit serial number
+        // 4. 一意の見積番号を生成 (EST + yyyyMMdd + 4桁連番)
         String quoteNo = generateQuoteNo();
 
-        // 5. Build and save Quote entity
+        // 5. 見積Entityの構築と保存
         Quote quote = new Quote();
         quote.setQuoteNo(quoteNo);
         quote.setDriverAge(request.getDriverAge());
@@ -97,18 +97,18 @@ public class QuoteServiceImpl implements QuoteService {
         quote.setCreatedAt(now);
         quote.setUpdatedAt(now);
 
-        // Write Quote to DB -> obtain auto-incremented ID
+        // データベースに保存し、自動採番された見積IDを取得
         Quote savedQuote = quoteRepository.save(quote);
         Long quoteId = savedQuote.getId();
 
-        // 6. Bind breakdowns with the generated quoteId and save
+        // 6. 計算内訳に見積IDを設定して一括保存
         List<QuoteBreakdown> breakdowns = calcResult.getBreakdowns();
         for (QuoteBreakdown qb : breakdowns) {
             qb.setQuoteId(quoteId);
         }
         quoteBreakdownRepository.saveAll(breakdowns);
 
-        // 7. Map to DTO Response
+        // 7. レスポンス用DTOへのマッピング
         return mapToResponse(savedQuote, breakdowns);
     }
 
@@ -305,7 +305,7 @@ public class QuoteServiceImpl implements QuoteService {
 
         if (startDateStr != null && !startDateStr.trim().isEmpty()) {
             try {
-                // 日本时间的 00:00:00 を取得し、それをUTCのLocalDateTimeに変換します
+                // 日本時間の 00:00:00 を取得し、それをUTCのLocalDateTimeに変換します
                 LocalDate localDate = LocalDate.parse(startDateStr.trim(), formatter);
                 ZonedDateTime jstStart = localDate.atStartOfDay(jstZone);
                 fromDate = jstStart.withZoneSameInstant(java.time.ZoneOffset.UTC).toLocalDateTime();
@@ -315,7 +315,7 @@ public class QuoteServiceImpl implements QuoteService {
         }
         if (endDateStr != null && !endDateStr.trim().isEmpty()) {
             try {
-                // 日本时间的 23:59:59.999999999 を取得し、それをUTCのLocalDateTimeに変換します
+                // 日本時間の 23:59:59.999999999 を取得し、それをUTCのLocalDateTimeに変換します
                 LocalDate localDate = LocalDate.parse(endDateStr.trim(), formatter);
                 ZonedDateTime jstEnd = localDate.atTime(java.time.LocalTime.MAX).atZone(jstZone);
                 toDate = jstEnd.withZoneSameInstant(java.time.ZoneOffset.UTC).toLocalDateTime();
@@ -341,7 +341,7 @@ public class QuoteServiceImpl implements QuoteService {
     }
 
     private void validateRequest(QuoteCreateRequest request) {
-        // Cross-field constraint validation
+        // 複数項目にまたがる相関バリデーションチェック
         if (Boolean.TRUE.equals(request.getHasCurrentInsurance())) {
             if (request.getGrade() == null) {
                 throw new BusinessException(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", "現在保険に加入している場合、等級は必須項目です。");
@@ -351,10 +351,10 @@ public class QuoteServiceImpl implements QuoteService {
             }
         }
 
-        // Future Year-Month validation for firstRegistrationYearMonth
+        // 初度登録年月の未来日付チェック
         try {
             YearMonth regYm = YearMonth.parse(request.getFirstRegistrationYearMonth(), DateTimeFormatter.ofPattern("yyyy-MM"));
-            // 日本时间（东京时区）を基準に現在の年月を取得して未来チェックを実施します
+            // 日本時間（東京タイムゾーン）を基準に現在の年月を取得して未来チェックを実施
             YearMonth currentYm = YearMonth.now(ZoneId.of("Asia/Tokyo"));
             if (regYm.isAfter(currentYm)) {
                 throw new BusinessException(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", "初度登録年月は未来の年月を入力できません。");
@@ -421,7 +421,7 @@ public class QuoteServiceImpl implements QuoteService {
 
         response.setBreakdowns(brList);
 
-        // ISO-8601 offset format, e.g. 2026-06-23T10:15:30Z or +00:00
+        // ISO-8601形式のオフセット日時に変換 (例: 2026-06-23T10:15:30Z)
         ZonedDateTime zdt = savedQuote.getCreatedAt().atZone(java.time.ZoneOffset.UTC);
         response.setCreatedAt(zdt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 

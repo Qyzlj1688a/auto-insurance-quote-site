@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
- * Quote creation request DTO.
+ * 見積作成要求パラメータのDTOクラス。
  */
 public class QuoteCreateRequest {
 
@@ -78,7 +78,7 @@ public class QuoteCreateRequest {
     @NotNull(message = "ロードサービスは必須項目です。")
     private Boolean roadService;
 
-    // Getters and Setters
+    // ゲッターとセッター
     public Integer getDriverAge() {
         return driverAge;
     }

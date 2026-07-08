@@ -5,7 +5,7 @@ import com.example.quote.entity.RateMaster;
 import java.math.BigDecimal;
 
 /**
- * Rate master response.
+ * 保険料率マスタ情報を返却するレスポンスDTOクラス。
  */
 public class RateMasterResponse {
 

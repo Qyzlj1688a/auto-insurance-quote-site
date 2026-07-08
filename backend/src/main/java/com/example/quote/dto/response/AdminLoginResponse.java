@@ -1,7 +1,7 @@
 package com.example.quote.dto.response;
 
 /**
- * Administrator login response.
+ * 管理者ログイン成功時のレスポンス情報（トークンおよびユーザー表示名）を保持するDTOクラス。
  */
 public class AdminLoginResponse {
 

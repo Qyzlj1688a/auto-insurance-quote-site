@@ -31,7 +31,7 @@ export const StepCoverages: React.FC<StepCoveragesProps> = ({
 
       <div className="selector-layout">
         <div className="form-fields">
-          {/* Bodily Injury Limit - Read Only */}
+          {/* 対人賠償制限額 - 読み取り専用 */}
           <div className="form-group">
             <label className="form-label">
               対人賠償責任保険 <span className="required-badge" style={{ background: "#64748b" }}>固定</span>
@@ -48,7 +48,7 @@ export const StepCoverages: React.FC<StepCoveragesProps> = ({
             </span>
           </div>
 
-          {/* Property Damage Limit */}
+          {/* 対物賠償制限額 */}
           <div className="form-group">
             <label className="form-label">
               対物賠償責任保険 <span className="required-badge">必填</span>
@@ -75,7 +75,7 @@ export const StepCoverages: React.FC<StepCoveragesProps> = ({
             </div>
           </div>
 
-          {/* Personal Injury Amount */}
+          {/* 人身傷害補償額 */}
           <div className="form-group">
             <label className="form-label">
               人身傷害保険 <span className="required-badge">必須</span>
@@ -103,7 +103,7 @@ export const StepCoverages: React.FC<StepCoveragesProps> = ({
             </div>
           </div>
 
-          {/* Lawyer Option */}
+          {/* 弁護士費用特約 */}
           <div className="form-group">
             <label className="form-label">
               弁護士費用特約 <span className="required-badge">必須</span>
@@ -136,7 +136,7 @@ export const StepCoverages: React.FC<StepCoveragesProps> = ({
             </div>
           </div>
 
-          {/* Road Service */}
+          {/* ロードサービス */}
           <div className="form-group">
             <label className="form-label">
               ロードサービス <span className="required-badge">必須</span>
@@ -170,7 +170,7 @@ export const StepCoverages: React.FC<StepCoveragesProps> = ({
           </div>
         </div>
 
-        {/* Sidebar Help */}
+        {/* サイドバーのヘルプガイド */}
         <div className="help-sidebar">
           <h3>ℹ️ 補償内容と加算額</h3>
           <p style={{ marginBottom: "12px" }}>

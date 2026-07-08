@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
- * Administrator authentication service implementation.
+ * 管理者認証サービス実装クラス。
  */
 @Service
 public class AdminAuthServiceImpl implements AdminAuthService {

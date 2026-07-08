@@ -59,7 +59,7 @@ export const StepUserInfo: React.FC<StepUserInfoProps> = ({
     }
   };
 
-  // Check overall form validity
+  // フォーム全体の入力検証状態を確認
   const isFormValid =
     data.driverAge !== "" &&
     !validateField("driverAge", data.driverAge) &&
@@ -222,7 +222,7 @@ export const StepUserInfo: React.FC<StepUserInfoProps> = ({
           </div>
         </div>
 
-        {/* Sidebar Help */}
+        {/* サイドバーのヘルプガイド */}
         <div className="help-sidebar">
           <h3>ℹ️ 条件と保費の関係</h3>
           <p style={{ marginBottom: "12px" }}>

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 /**
- * Quote breakdown repository.
+ * 見積計算内訳用リポジトリインターフェース。
  */
 public interface QuoteBreakdownRepository extends JpaRepository<QuoteBreakdown, Long> {
 

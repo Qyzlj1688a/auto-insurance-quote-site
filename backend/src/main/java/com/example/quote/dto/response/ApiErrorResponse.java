@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Standard API error response.
+ * APIエラー時の標準的なエラー情報レスポンスを表すDTOクラス。
  */
 public class ApiErrorResponse {
 

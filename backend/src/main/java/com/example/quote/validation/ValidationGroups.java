@@ -1,10 +1,9 @@
 package com.example.quote.validation;
 
 /**
- * Validation group marker interfaces.
+ * バリデーションのグループ化用マーカーインターフェース群。
  *
- * <p>These markers keep the validation layer visible before concrete request
- * rules are added.
+ * <p>リクエストパラメータの検証ルールを条件（作成、検索など）によって切り替えるために使用します。
  */
 public final class ValidationGroups {
 

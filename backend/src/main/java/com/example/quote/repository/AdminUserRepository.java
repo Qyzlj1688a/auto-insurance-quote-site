@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 /**
- * Administrator user repository.
+ * 管理者ユーザー用リポジトリインターフェース。
  */
 public interface AdminUserRepository extends JpaRepository<AdminUser, Long> {
 

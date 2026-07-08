@@ -33,7 +33,7 @@ export const StepVehicle: React.FC<StepVehicleProps> = ({
         carName: matched.carName,
         vehicleType: matched.vehicleType,
       });
-      // Clear validation errors for the fields we auto-populated
+      // 自動入力された項目のバリデーションエラーをクリア
       setErrors((prev) => {
         const copy = { ...prev };
         delete copy.maker;
@@ -103,7 +103,7 @@ export const StepVehicle: React.FC<StepVehicleProps> = ({
     }
   };
 
-  // Overall step validation check
+  // フォーム全体の入力検証状態を確認
   const isFormValid =
     !!data.maker &&
     !validateField("maker", data.maker) &&
@@ -127,7 +127,7 @@ export const StepVehicle: React.FC<StepVehicleProps> = ({
 
       <div className="selector-layout">
         <div className="form-fields">
-          {/* Model Code Search Sub-panel */}
+          {/* 型式検索パネル */}
           <div className="form-group" style={{
             background: "var(--primary-light)",
             border: "1px dashed rgba(37, 99, 235, 0.2)",
@@ -309,7 +309,7 @@ export const StepVehicle: React.FC<StepVehicleProps> = ({
           </div>
         </div>
 
-        {/* Sidebar Help */}
+        {/* サイドバーのヘルプガイド */}
         <div className="help-sidebar">
           <h3>ℹ️ 車両情報と料率</h3>
           <p style={{ marginBottom: "12px" }}>

@@ -4,7 +4,7 @@ import com.example.quote.entity.QuoteBreakdown;
 import java.util.List;
 
 /**
- * Domain-level calculation result carrier.
+ * 保険料計算エンジンの結果（年間/月額保険料および内訳）を保持するドメイン層クラス。
  */
 public class QuoteCalculationResult {
 

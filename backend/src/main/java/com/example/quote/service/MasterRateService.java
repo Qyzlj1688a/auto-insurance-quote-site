@@ -5,7 +5,7 @@ import com.example.quote.dto.response.RateMasterResponse;
 import java.util.List;
 
 /**
- * Rate master service contract.
+ * 保険料率マスタサービスインターフェース。
  */
 public interface MasterRateService {
 

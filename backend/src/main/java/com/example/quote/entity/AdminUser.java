@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 /**
- * Administrator user entity.
+ * 管理者ユーザーエンティティ。
  */
 @Entity
 @Table(name = "admin_users")

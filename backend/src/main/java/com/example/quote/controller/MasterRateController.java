@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Rate master controller.
+ * 保険料率マスタ参照用コントローラー。
  */
 @RestController
 @RequestMapping("/api/master")

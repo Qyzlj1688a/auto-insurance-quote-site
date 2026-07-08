@@ -52,7 +52,7 @@ function PublicWizard() {
   const handleSuccess = (result: QuoteResultResponse, fromLookup: boolean = false) => {
     setQuoteResult(result);
     setIsLookupMode(fromLookup);
-    setCurrentStep(6); // StepResult is step 6
+    setCurrentStep(6); // 見積結果表示画面はステップ6
   };
 
   const handleReset = () => {
@@ -63,10 +63,10 @@ function PublicWizard() {
   };
 
   const handleModify = () => {
-    setCurrentStep(5); // Jump back to confirmation (StepConfirm is step 5)
+    setCurrentStep(5); // 入力確認画面（ステップ5）へ戻る
   };
 
-  // Helper to check if step indicator should be displayed (Step 1 to Step 5)
+  // ステップインジケータ（ステップ1〜5）を表示するかどうかの判定
   const showStepper = currentStep >= 1 && currentStep <= 5;
 
   const stepsList = [
@@ -79,7 +79,7 @@ function PublicWizard() {
 
   return (
     <>
-      {/* Stepper Progress Bar */}
+      {/* ステップインジケータ（プログレスバー） */}
       {showStepper && (
         <div className="stepper">
           {stepsList.map((step) => {
@@ -99,7 +99,7 @@ function PublicWizard() {
         </div>
       )}
 
-      {/* Wizard Step Switch */}
+      {/* お見積りステップ切り替え */}
       {currentStep === 0 && <StepTop onNext={handleNext} onLookupSuccess={(res) => handleSuccess(res, true)} />}
       {currentStep === 1 && (
         <StepUserInfo
@@ -153,7 +153,7 @@ function PublicWizard() {
   );
 }
 
-// Protected Route wrapper component
+// ログイン保護用ルーティングラッパーコンポーネント
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = sessionStorage.getItem("adminToken");
   if (!token) {
@@ -165,7 +165,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <BrowserRouter>
-      {/* Header */}
+      {/* ヘッダー */}
       <header className="app-header">
         <div className="header-content">
           <div className="header-logo">安特自動車保険</div>
@@ -173,7 +173,7 @@ function App() {
         </div>
       </header>
 
-      {/* Main Container */}
+      {/* メインコンテンツエリア */}
       <main className="main-content">
         <Routes>
           <Route path="/" element={<PublicWizard />} />
@@ -186,12 +186,12 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* Fallback redirect */}
+          {/* それ以外のパスはトップにリダイレクト */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
 
-      {/* Footer */}
+      {/* フッター */}
       <footer className="app-footer">
         <p>&copy; 2026 株式会社ティーアンドエス. All Rights Reserved. (簡易見積課題用デモ)</p>
       </footer>

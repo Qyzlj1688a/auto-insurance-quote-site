@@ -6,54 +6,54 @@ import com.example.quote.dto.response.QuoteResultResponse;
 import java.util.List;
 
 /**
- * Service interface for quotes.
+ * 見積処理用サービスインターフェース。
  */
 public interface QuoteService {
 
     /**
-     * Creates a new quote calculation, saves it to database, and returns the response.
+     * 新規の見積計算を実行し、データベースに保存した上で結果レスポンスを返却します。
      *
-     * @param request the conditions to calculate the premium for
-     * @return the saved quote result details
+     * @param request 保険料計算用の見積依頼パラメータ
+     * @return 保存された見積結果の詳細情報
      */
     QuoteResultResponse createQuote(QuoteCreateRequest request);
 
     /**
-     * Retrieves an existing quote by its quote number.
+     * 見積番号をキーとして、既存の見積詳細情報を取得します。
      *
-     * @param quoteNo the quote number to search for
-     * @return the quote result response
+     * @param quoteNo 検索対象の見積番号
+     * @return 見積結果レスポンス
      */
     QuoteResultResponse getQuoteByQuoteNo(String quoteNo);
 
     /**
-     * Searches quotes by quote number and creation date range.
+     * 見積番号および作成日の期間を指定して見積一覧を検索します。
      *
-     * @param quoteNo the quote number filter (optional, partial match)
-     * @param createDateFrom start of creation date range (optional, yyyy-MM-dd)
-     * @param createDateTo end of creation date range (optional, yyyy-MM-dd)
-     * @return a list of matching quote result responses
+     * @param quoteNo 見積番号フィルタ（任意、部分一致）
+     * @param createDateFrom 作成日の検索開始期間（任意、yyyy-MM-dd）
+     * @param createDateTo 作成日の検索終了期間（任意、yyyy-MM-dd）
+     * @return 該当する見積結果レスポンスのリスト
      */
     List<QuoteResultResponse> searchQuotes(String quoteNo, String createDateFrom, String createDateTo);
 
     /**
-     * Exports quotes matching filters as a Japanese CSV string.
+     * フィルタ条件に合致する見積一覧情報を日本語ヘッダーのCSV文字列としてエクスポートします。
      *
-     * @param quoteNo the quote number filter (optional, partial match)
-     * @param createDateFrom start of creation date range (optional, yyyy-MM-dd)
-     * @param createDateTo end of creation date range (optional, yyyy-MM-dd)
-     * @return CSV string with Japanese headers and value mappings
+     * @param quoteNo 見積番号フィルタ（任意、部分一致）
+     * @param createDateFrom 作成日の検索開始期間（任意、yyyy-MM-dd）
+     * @param createDateTo 作成日の検索終了期間（任意、yyyy-MM-dd）
+     * @return 日本語ヘッダーと値のマッピングを含むCSV文字列
      */
     String exportQuotesCsv(String quoteNo, String createDateFrom, String createDateTo);
 
     /**
-     * Streams quotes matching filters as a Japanese CSV directly into the given writer.
-     * Prevent memory footprint scaling linearly with database records.
+     * 検索条件に合致する見積一覧情報を日本語ヘッダーのCSV形式でWriterへ直接書き出します（ストリーミング出力）。
+     * 大容量データのエクスポート時にメモリ使用量が肥大化するのを防ぎます。
      *
-     * @param writer the writer to output the CSV characters to
-     * @param quoteNo the quote number filter (optional, partial match)
-     * @param createDateFrom start of creation date range (optional, yyyy-MM-dd)
-     * @param createDateTo end of creation date range (optional, yyyy-MM-dd)
+     * @param writer CSV文字を出力するWriterオブジェクト
+     * @param quoteNo 見積番号フィルタ（任意、部分一致）
+     * @param createDateFrom 作成日の検索開始期間（任意、yyyy-MM-dd）
+     * @param createDateTo 作成日の検索終了期間（任意、yyyy-MM-dd）
      */
     void exportQuotesCsvStream(java.io.Writer writer, String quoteNo, String createDateFrom, String createDateTo);
 }

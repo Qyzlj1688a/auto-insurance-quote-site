@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Returns a unified JSON body for 403 responses.
+ * 403権限不足エラー時に統一されたJSON形式のレスポンスを返却するハンドラー。
  */
 @Component
 public class RestAccessDeniedHandler implements AccessDeniedHandler {
