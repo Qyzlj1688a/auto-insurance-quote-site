@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,6 +36,19 @@ public class GlobalExceptionHandler {
         if (log.isDebugEnabled()) {
             log.debug("Validation failed: {}", fieldErrors);
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    /**
+     * リクエストボディのJSON構文エラー、型不一致（例: 数値項目に文字列を指定）、
+     * および整数項目への小数値の指定（Jacksonの{@code CoercionConfig}によりFailに設定済み）を
+     * すべて400 VALIDATION_ERRORとして返却する。従来はここが未捕捉のまま
+     * 汎用{@code Exception}ハンドラに落ちて500 SYSTEM_ERRORになっていた（重大問題2）。
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
+        log.warn("Malformed request body: {}", exception.getMessage());
+        ApiErrorResponse response = ApiErrorResponse.of("VALIDATION_ERROR", "リクエストの形式が正しくありません。");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 

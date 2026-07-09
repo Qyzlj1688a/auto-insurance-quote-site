@@ -1,0 +1,26 @@
+# Dockerイメージのビルドコンテキストから除外するファイル/ディレクトリ。
+#
+# 本Dockerfileは `COPY package.json package-lock.json ./` → `RUN npm ci` の後に
+# `COPY . .` を実行する構成になっている。このファイルが無い場合、ホスト側に
+# ローカル開発用の node_modules（`npm install` 等で生成されたもの）が存在すると、
+# `COPY . .` によってホストOS/アーキテクチャ向けにビルドされたネイティブバイナリ
+# （esbuild/rollup等）を含む node_modules がコンテナ内にそのまま上書きコピーされ、
+# コンテナ内（Linux/Alpine）で `npm run build` がネイティブバイナリの不整合により
+# 失敗する可能性がある。これを防ぐため、ビルドコンテキストの時点で除外する。
+node_modules
+dist
+dist-ssr
+*.local
+
+# エディタ/OS付随ファイル
+.vscode
+.idea
+.DS_Store
+
+# Git関連（ビルドに不要）
+.git
+.gitignore
+
+# テスト・型チェック結果等（ビルドに不要な成果物）
+coverage
+*.tsbuildinfo

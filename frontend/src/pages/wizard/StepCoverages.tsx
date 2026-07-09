@@ -51,7 +51,7 @@ export const StepCoverages: React.FC<StepCoveragesProps> = ({
           {/* 対物賠償制限額 */}
           <div className="form-group">
             <label className="form-label">
-              対物賠償責任保険 <span className="required-badge">必填</span>
+              対物賠償責任保険 <span className="required-badge">必須</span>
             </label>
             <div className="radio-grid">
               {[

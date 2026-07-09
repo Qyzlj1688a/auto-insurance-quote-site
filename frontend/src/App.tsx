@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QuoteCreateRequest, QuoteResultResponse } from "./types";
 import { StepTop } from "./pages/wizard/StepTop";
@@ -31,11 +31,69 @@ const initialFormState: QuoteCreateRequest = {
   roadService: null,
 };
 
+// 次-7対応: 誤ってブラウザを更新（リロード）した場合に、入力途中の内容が
+// 全て消えてしまうのを防ぐため、ウィザードの入力状態をsessionStorageに同期する。
+const WIZARD_STATE_STORAGE_KEY = "quoteWizardState";
+
+interface PersistedWizardState {
+  currentStep: number;
+  formData: QuoteCreateRequest;
+}
+
+function loadPersistedWizardState(): PersistedWizardState | null {
+  try {
+    const raw = sessionStorage.getItem(WIZARD_STATE_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+    const parsed = JSON.parse(raw) as PersistedWizardState;
+    // 見積完了後（ステップ6）や開始前（ステップ0）は復元対象外とし、
+    // 入力途中（ステップ1〜5）のみ復元する
+    if (
+      parsed &&
+      typeof parsed.currentStep === "number" &&
+      parsed.currentStep >= 1 &&
+      parsed.currentStep <= 5 &&
+      parsed.formData
+    ) {
+      return parsed;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function clearPersistedWizardState() {
+  try {
+    sessionStorage.removeItem(WIZARD_STATE_STORAGE_KEY);
+  } catch {
+    // sessionStorageが利用できない環境（プライベートモード等）でも処理を継続する
+  }
+}
+
 function PublicWizard() {
-  const [currentStep, setCurrentStep] = useState<number>(0);
-  const [formData, setFormData] = useState<QuoteCreateRequest>(initialFormState);
+  const persisted = loadPersistedWizardState();
+  const [currentStep, setCurrentStep] = useState<number>(persisted?.currentStep ?? 0);
+  const [formData, setFormData] = useState<QuoteCreateRequest>(persisted?.formData ?? initialFormState);
   const [quoteResult, setQuoteResult] = useState<QuoteResultResponse | null>(null);
   const [isLookupMode, setIsLookupMode] = useState<boolean>(false);
+
+  useEffect(() => {
+    // 入力途中（ステップ1〜5）のみ保存し、開始前・完了後は保存しない
+    if (currentStep >= 1 && currentStep <= 5) {
+      try {
+        sessionStorage.setItem(
+          WIZARD_STATE_STORAGE_KEY,
+          JSON.stringify({ currentStep, formData })
+        );
+      } catch {
+        // sessionStorageが利用できない環境でも入力自体は継続できるようにする
+      }
+    } else {
+      clearPersistedWizardState();
+    }
+  }, [currentStep, formData]);
 
   const updateFormData = (updates: Partial<QuoteCreateRequest>) => {
     setFormData((prev) => ({ ...prev, ...updates }));

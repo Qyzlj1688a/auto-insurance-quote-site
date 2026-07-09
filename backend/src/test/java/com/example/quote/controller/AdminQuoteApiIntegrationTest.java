@@ -32,6 +32,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * {@code AdminQuoteController} / {@code AdminAuthController} のControllerスライステスト（{@code @WebMvcTest}）。
+ *
+ * <p>{@link com.example.quote.service.QuoteService} と {@link com.example.quote.service.AdminAuthService}
+ * は {@code @MockBean} でモック化されているため、実際のBCrypt照合・JWT発行・DB検索は検証していない。
+ * 認可ルール（401/200）やレスポンス形式（CSVヘッダ等）の検証が目的。
+ * 実DB・実認証を用いた真の結合テストは {@link com.example.quote.integration.AdminQuoteServiceIntegrationTest} を参照。
+ */
 @WebMvcTest({AdminQuoteController.class, AdminAuthController.class})
 @Import({SecurityConfig.class, RestAuthenticationEntryPoint.class, RestAccessDeniedHandler.class})
 class AdminQuoteApiIntegrationTest {

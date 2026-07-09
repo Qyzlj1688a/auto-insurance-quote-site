@@ -1,0 +1,18 @@
+# Dockerイメージのビルドコンテキストから除外するファイル/ディレクトリ。
+#
+# 本Dockerfileは `COPY pom.xml .` → `COPY src ./src` のように明示的なコピーのみを
+# 行っており、現状 `COPY . .` のような無条件コピーは存在しないためリスクは低いが、
+# ビルドコンテキスト転送量を減らす目的、および将来Dockerfileが変更された場合の
+# 保険として、ローカルビルド成果物やIDE設定を除外しておく。
+target
+.mvn/wrapper
+*.iml
+
+# エディタ/OS付随ファイル
+.vscode
+.idea
+.DS_Store
+
+# Git関連（ビルドに不要）
+.git
+.gitignore

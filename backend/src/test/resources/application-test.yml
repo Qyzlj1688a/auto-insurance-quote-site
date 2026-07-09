@@ -1,0 +1,19 @@
+# Testcontainers を用いた真の結合テスト専用プロファイル。
+# datasource の url/username/password は @ServiceConnection によって
+# Testcontainers が起動した実PostgreSQLコンテナの情報が自動的に注入されるため、
+# ここでは明示的に指定しない。
+spring:
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema.sql
+      data-locations: classpath:db/data.sql
+  jpa:
+    hibernate:
+      ddl-auto: none
+    defer-datasource-initialization: false
+
+app:
+  jwt:
+    secret: integration-test-only-secret-key-not-used-in-production-環境
+    expiration-ms: 7200000

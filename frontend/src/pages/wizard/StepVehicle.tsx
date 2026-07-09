@@ -207,7 +207,7 @@ export const StepVehicle: React.FC<StepVehicleProps> = ({
           {/* Car Name */}
           <div className="form-group">
             <label className="form-label">
-              车名 <span className="required-badge">必須</span>
+              車名 <span className="required-badge">必須</span>
             </label>
             <input
               type="text"

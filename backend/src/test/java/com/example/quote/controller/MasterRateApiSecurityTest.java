@@ -22,6 +22,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * {@code MasterRateController} のControllerスライステスト（{@code @WebMvcTest}）。
+ * {@link com.example.quote.service.MasterRateService} は {@code @MockBean} でモック化されており、
+ * 認可ルール（未認証401 / 認証済み200）のみを検証する。実DBを用いた料率取得の検証は
+ * {@code MasterRateServiceTest} を参照。
+ */
 @WebMvcTest(MasterRateController.class)
 @Import({SecurityConfig.class, RestAuthenticationEntryPoint.class, RestAccessDeniedHandler.class})
 class MasterRateApiSecurityTest {

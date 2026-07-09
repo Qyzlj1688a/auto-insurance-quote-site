@@ -38,7 +38,7 @@ public class QuoteController {
      * @param request 見積作成パラメータ
      * @return 保険料の計算結果
      */
-    @Operation(summary = "新規見積作成", description = "入力値を検証し、保険料の计算結果を返却するとともにデータベースに保存します。")
+    @Operation(summary = "新規見積作成", description = "入力値を検証し、保険料の計算結果を返却するとともにデータベースに保存します。")
     @PostMapping
     public ResponseEntity<QuoteResultResponse> createQuote(@Valid @RequestBody QuoteCreateRequest request) {
         QuoteResultResponse response = quoteService.createQuote(request);
@@ -51,7 +51,7 @@ public class QuoteController {
      * @param quoteNo ユニークな見積番号 (例: EST202606230001)
      * @return 見積詳細および計算内訳
      */
-    @Operation(summary = "見積結果取得", description = "見積番号をキーとして、保存された見積詳細と内訳明细を取得します。")
+    @Operation(summary = "見積結果取得", description = "見積番号をキーとして、保存された見積詳細と内訳明細を取得します。")
     @GetMapping("/{quoteNo}")
     public ResponseEntity<QuoteResultResponse> getQuote(
             @Parameter(description = "見積番号", example = "EST202606230001")

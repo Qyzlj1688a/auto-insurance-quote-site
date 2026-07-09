@@ -22,6 +22,14 @@ app:
   jwt:
     secret: ${JWT_SECRET:T&S_Auto_Insurance_Secret_Key_2026_06_25}
     expiration-ms: 7200000 # 2 hours
+  login-lockout:
+    # 同一ログインIDでの連続ログイン失敗がこの回数に達するとロックする（ブルートフォース対策）
+    max-failed-attempts: 5
+    # ロック時間（分）。この間は正しい資格情報でもログイン不可となる
+    lockout-minutes: 15
+  cors:
+    # フロントエンドの許可オリジン（カンマ区切りで複数指定可）。次-3対応。
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
 
 server:
   port: ${SERVER_PORT:8080}

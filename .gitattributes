@@ -1,0 +1,24 @@
+# 次-8対応: DockerfileやシェルスクリプトがCRLFで保存されると、Linuxベースの
+# コンテナ内で実行エラー（例: "no such file or directory"、シバン行の解釈失敗）を
+# 引き起こす可能性があるため、これらのファイルはOS/エディタ設定に関わらず
+# 常にLF改行で管理する。Windows環境（本プロジェクトの開発環境）で作業しても
+# コミット時にCRLFへ変換されないようにするための設定。
+
+* text=auto eol=lf
+
+*.sh text eol=lf
+*.bash text eol=lf
+Dockerfile text eol=lf
+Dockerfile.* text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sql text eol=lf
+*.conf text eol=lf
+entrypoint* text eol=lf
+
+# バイナリ扱いで改行変換の対象外とするファイル
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary

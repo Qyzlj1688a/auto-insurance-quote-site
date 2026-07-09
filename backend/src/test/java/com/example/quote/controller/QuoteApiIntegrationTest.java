@@ -25,11 +25,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.quote.config.JacksonConfig;
 import com.example.quote.config.SecurityConfig;
 import org.springframework.context.annotation.Import;
 
+/**
+ * {@code QuoteController} のControllerスライステスト（{@code @WebMvcTest}）。
+ *
+ * <p>{@link com.example.quote.service.QuoteService} は {@code @MockBean} でモック化されているため、
+ * 実際のDB永続化・トランザクション・見積番号採番ロジックは検証していない。
+ * リクエスト/レスポンスのマッピング・入力バリデーション・HTTPステータスの検証が目的。
+ * 実DBを用いた真の結合テストは {@link com.example.quote.integration.QuoteServiceIntegrationTest} を参照。
+ */
 @WebMvcTest(QuoteController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, JacksonConfig.class})
 class QuoteApiIntegrationTest {
 
     @Autowired
@@ -158,6 +167,69 @@ class QuoteApiIntegrationTest {
                 .andExpect(jsonPath("$.monthlyPremium").value(6700))
                 .andExpect(jsonPath("$.breakdowns[0].itemCode").value("BASE"))
                 .andExpect(jsonPath("$.createdAt").value("2026-06-23T11:30:00+09:00"));
+    }
+
+    @Test
+    void createQuoteReturns400WhenDriverAgeIsNonNumeric() throws Exception {
+        // 重大問題2: 数値項目に文字列("abc")を渡した場合、従来は500 SYSTEM_ERRORになっていたが
+        // HttpMessageNotReadableExceptionハンドラの追加により400 VALIDATION_ERRORとなることを検証
+        String invalidJson = """
+                {
+                  "driverAge": "abc",
+                  "licenseColor": "GOLD",
+                  "usageType": "PRIVATE",
+                  "annualMileage": 8000,
+                  "driverRange": "SELF",
+                  "hasCurrentInsurance": false,
+                  "maker": "トヨタ",
+                  "carName": "プリウス",
+                  "firstRegistrationYearMonth": "2020-05",
+                  "vehicleType": "SEDAN",
+                  "vehicleInsurance": false,
+                  "propertyDamageLimit": "UNLIMITED",
+                  "personalInjuryAmount": "UNLIMITED",
+                  "lawyerOption": false,
+                  "roadService": false
+                }
+                """;
+
+        mockMvc.perform(post("/api/quotes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$.message").value("リクエストの形式が正しくありません。"));
+    }
+
+    @Test
+    void createQuoteReturns400WhenDriverAgeHasFractionalPart() throws Exception {
+        // 重大問題2: 整数項目に小数値(35.5)を渡した場合、従来は静默截断されて35として
+        // 受理されてしまっていたが、JacksonのCoercionConfig設定により400を返すことを検証
+        String invalidJson = """
+                {
+                  "driverAge": 35.5,
+                  "licenseColor": "GOLD",
+                  "usageType": "PRIVATE",
+                  "annualMileage": 8000,
+                  "driverRange": "SELF",
+                  "hasCurrentInsurance": false,
+                  "maker": "トヨタ",
+                  "carName": "プリウス",
+                  "firstRegistrationYearMonth": "2020-05",
+                  "vehicleType": "SEDAN",
+                  "vehicleInsurance": false,
+                  "propertyDamageLimit": "UNLIMITED",
+                  "personalInjuryAmount": "UNLIMITED",
+                  "lawyerOption": false,
+                  "roadService": false
+                }
+                """;
+
+        mockMvc.perform(post("/api/quotes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"));
     }
 
     @Test
