@@ -31,12 +31,14 @@
 
 本システムは以下の技術スタックとバージョンに基づいて構築されています：
 
-- **Backend**: Java 17, Spring Boot 3.3.2, Spring Data JPA, Spring Security
+- **Backend**: Java 17, Spring Boot 3.3.2, Spring Data JPA, Spring Security, JJWT
 - **Frontend**: React 18.3.1, TypeScript 5.6.3, Vite 5.4.10, Axios 1.7.7
 - **Database**: PostgreSQL 16
 - **Container**: Docker Compose
 - **API ドキュメント**: OpenAPI / Swagger UI (springdoc-openapi)
 - **テストフレームワーク**: JUnit 5, Vitest, React Testing Library
+
+管理者認証では、JJWTを使用した標準JWT（HS256署名）を発行し、管理者APIへのアクセス時にBearerトークンとして検証します。
 
 ---
 

@@ -9,7 +9,7 @@ class JwtTokenProviderTest {
 
     private JwtTokenProvider tokenProvider;
     private final String testSecret = "Test_Secret_Key_For_Jwt_Provider_Token_Test";
-    private final long testExpirationMs = 5000; // 5 seconds for normal tests
+    private final long testExpirationMs = 5000; // 通常テスト用の有効期限（5秒）
 
     @BeforeEach
     void setUp() {
@@ -21,6 +21,7 @@ class JwtTokenProviderTest {
         String username = "admin";
         String token = tokenProvider.generateToken(username);
         assertNotNull(token);
+        assertEquals(3, token.split("\\.").length);
 
         String validatedUsername = tokenProvider.validateTokenAndGetUsername(token);
         assertEquals(username, validatedUsername);
@@ -28,7 +29,7 @@ class JwtTokenProviderTest {
 
     @Test
     void generateAndValidateTokenSuccessForUsernameWithDots() {
-        // Test username with dots (to verify dot username split fix)
+        // ドットを含むユーザー名でもJWTのsubjectとして正しく扱えることを確認する
         String username = "admin.ts.developer.2026";
         String token = tokenProvider.generateToken(username);
         assertNotNull(token);
@@ -39,11 +40,11 @@ class JwtTokenProviderTest {
 
     @Test
     void validateTokenReturnsNullWhenExpired() throws InterruptedException {
-        // Use a very short expiration time (1ms)
+        // 有効期限切れを確認するため、極端に短い有効期限（1ms）を設定する
         JwtTokenProvider shortLivedProvider = new JwtTokenProvider(testSecret, 1);
         String token = shortLivedProvider.generateToken("admin");
         
-        // Wait 5ms to guarantee expiration
+        // 期限切れを確実にするため5ms待機する
         Thread.sleep(5);
 
         String validatedUsername = shortLivedProvider.validateTokenAndGetUsername(token);
@@ -54,7 +55,7 @@ class JwtTokenProviderTest {
     void validateTokenReturnsNullWhenSignatureIsTampered() {
         String token = tokenProvider.generateToken("admin");
         
-        // Tamper signature by appending a character
+        // 末尾に文字を追加して署名不正のJWTに改ざんする
         String tamperedToken = token + "A";
         
         String validatedUsername = tokenProvider.validateTokenAndGetUsername(tamperedToken);

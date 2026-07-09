@@ -1,15 +1,18 @@
 package com.example.quote.security;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.Base64;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+import java.time.Instant;
+import java.util.Date;
+
+import javax.crypto.SecretKey;
 
 /**
- * HmacSHA256アルゴリズムを使用した軽量なステートレストークンプロバイダー。
+ * 標準JWT（HS256）を使用した管理者認証用トークンプロバイダー。
  */
 @Component
 public class JwtTokenProvider {
@@ -26,57 +29,31 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(String username) {
-        long expiry = System.currentTimeMillis() + expirationTime;
-        String payload = username + "." + expiry;
-        String signature = sign(payload);
-        return Base64.getUrlEncoder().encodeToString((payload + "." + signature).getBytes(StandardCharsets.UTF_8));
+        Instant now = Instant.now();
+        Instant expiresAt = now.plusMillis(expirationTime);
+
+        return Jwts.builder()
+                .subject(username)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiresAt))
+                .signWith(getSigningKey(), Jwts.SIG.HS256)
+                .compact();
     }
 
     public String validateTokenAndGetUsername(String token) {
         try {
-            byte[] decodedBytes = Base64.getUrlDecoder().decode(token);
-            String decoded = new String(decodedBytes, StandardCharsets.UTF_8);
-
-            // 署名を分離する最後のドット位置を特定
-            int lastDot = decoded.lastIndexOf('.');
-            if (lastDot == -1) {
-                return null;
-            }
-            String signature = decoded.substring(lastDot + 1);
-            String payload = decoded.substring(0, lastDot);
-
-            // 有効期限を分離する2番目のドット位置を特定
-            int secondLastDot = payload.lastIndexOf('.');
-            if (secondLastDot == -1) {
-                return null;
-            }
-            String username = payload.substring(0, secondLastDot);
-            String expiryStr = payload.substring(secondLastDot + 1);
-
-            long expiry = Long.parseLong(expiryStr);
-            if (System.currentTimeMillis() > expiry) {
-                return null; // 有効期限切れのトークン
-            }
-
-            String expectedSignature = sign(username + "." + expiry);
-            if (MessageDigest.isEqual(expectedSignature.getBytes(StandardCharsets.UTF_8), signature.getBytes(StandardCharsets.UTF_8))) {
-                return username;
-            }
+            return Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getSubject();
         } catch (Exception e) {
             return null;
         }
-        return null;
     }
 
-    private String sign(String data) {
-        try {
-            Mac sha256HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
-            sha256HMAC.init(secretKey);
-            byte[] hash = sha256HMAC.doFinal(data.getBytes(StandardCharsets.UTF_8));
-            return Base64.getUrlEncoder().encodeToString(hash);
-        } catch (Exception e) {
-            throw new RuntimeException("HMACによる署名処理に失敗しました", e);
-        }
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 }
