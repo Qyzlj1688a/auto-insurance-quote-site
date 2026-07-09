@@ -76,7 +76,7 @@ public class JwtTokenProvider {
             byte[] hash = sha256HMAC.doFinal(data.getBytes(StandardCharsets.UTF_8));
             return Base64.getUrlEncoder().encodeToString(hash);
         } catch (Exception e) {
-            throw new RuntimeException("HMAC signing failed", e);
+            throw new RuntimeException("HMACによる署名処理に失敗しました", e);
         }
     }
 }

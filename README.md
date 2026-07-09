@@ -67,7 +67,7 @@ docker compose up --build -d
 - **Frontend (一般見積り)**: `http://localhost:5173`
 - **Frontend (管理者ログイン)**: `http://localhost:5173/admin/login`
 - **Backend**: `http://localhost:8080`
-- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **Swagger UI**: `http://localhost:8080/swagger-ui/index.html`
 - **Actuator Health Check**: `http://localhost:8080/actuator/health`
 
 ### 2. 個別での起動方法
@@ -92,11 +92,11 @@ npm run dev
 
 ---
 
-## 数据库設計と初期アカウント
+## データベース設計と初期アカウント
 
 `docker compose up` 時、またはDBコンテナ初回起動時に以下のスクリプトが自動実行されます：
 - `db/schema.sql`: テーブル作成（`quotes`、`quote_breakdowns`、`rate_masters`、`admin_users` 等）および CHECK 制約の定義。
-- `db/data.sql`: 基础料率マスタデータおよび管理者アカウントの登録。
+- `db/data.sql`: 基本料率マスタデータおよび管理者アカウントの登録。
 
 ### 管理者初期アカウント情報
 - **ログインID**: `admin`

@@ -76,150 +76,149 @@ class PremiumCalculatorTest {
 
     @Test
     void testUT003_AgeBoundaries() {
-        // Age 25
+        // 年齢 25歳（係数1.60）
         QuoteCreateRequest r1 = createBaseRequest();
         r1.setDriverAge(25);
         QuoteCalculationResult res1 = premiumCalculator.calculate(r1, mockRates);
         
-        // Age 26
+        // 年齢 26歳（係数1.25）
         QuoteCreateRequest r2 = createBaseRequest();
         r2.setDriverAge(26);
         QuoteCalculationResult res2 = premiumCalculator.calculate(r2, mockRates);
 
-        // Age 34
+        // 年齢 34歳（係数1.25）
         QuoteCreateRequest r3 = createBaseRequest();
         r3.setDriverAge(34);
         QuoteCalculationResult res3 = premiumCalculator.calculate(r3, mockRates);
 
-        // Age 35
+        // 年齢 35歳（係数1.00）
         QuoteCreateRequest r4 = createBaseRequest();
         r4.setDriverAge(35);
         QuoteCalculationResult res4 = premiumCalculator.calculate(r4, mockRates);
 
-        // Age 59
+        // 年齢 59歳（係数1.00）
         QuoteCreateRequest r5 = createBaseRequest();
         r5.setDriverAge(59);
         QuoteCalculationResult res5 = premiumCalculator.calculate(r5, mockRates);
 
-        // Age 60
+        // 年齢 60歳（係数1.20）
         QuoteCreateRequest r6 = createBaseRequest();
         r6.setDriverAge(60);
         QuoteCalculationResult res6 = premiumCalculator.calculate(r6, mockRates);
 
-        // 25 vs 26 (multiplier 1.60 vs 1.25)
-        // UT-001 age 35 was 37400. age 35 base premium multiplier = 1.0. age 25 base premium multiplier = 1.6.
-        // 32400 * 1.6 = 51840. 51840 + 5000 = 56840. Let's assert:
+        // 25歳（係数1.60）vs 26歳（係数1.25）の境界値確認
+        // UT-001基準：35歳のベース保険料は32400円。25歳係数1.6 → 32400 * 1.6 = 51840。51840 + 5000 = 56840
         assertEquals(56840, res1.getAnnualPremium());
         
-        // 26 (1.25): 32400 * 1.25 = 40500. 40500 + 5000 = 45500.
+        // 26歳（係数1.25）：32400 * 1.25 = 40500。40500 + 5000 = 45500
         assertEquals(45500, res2.getAnnualPremium());
 
-        // 34 (1.25)
+        // 34歳（係数1.25）：26歳と同一係数
         assertEquals(45500, res3.getAnnualPremium());
 
-        // 35 (1.00)
+        // 35歳（係数1.00）：基準値
         assertEquals(37400, res4.getAnnualPremium());
 
-        // 59 (1.00)
+        // 59歳（係数1.00）：35歳と同一係数
         assertEquals(37400, res5.getAnnualPremium());
 
-        // 60 (1.20): 32400 * 1.20 = 38880. 38880 + 5000 = 43880.
+        // 60歳（係数1.20）：32400 * 1.20 = 38880。38880 + 5000 = 43880
         assertEquals(43880, res6.getAnnualPremium());
     }
 
     @Test
     void testUT004_MileageBoundaries() {
-        // Mileage 5000 (0.95)
+        // 走行距離 5000km（係数0.95）
         QuoteCreateRequest r1 = createBaseRequest();
         r1.setAnnualMileage(5000);
         QuoteCalculationResult res1 = premiumCalculator.calculate(r1, mockRates);
 
-        // Mileage 5001 (1.00)
+        // 走行距離 5001km（係数1.00）
         QuoteCreateRequest r2 = createBaseRequest();
         r2.setAnnualMileage(5001);
         QuoteCalculationResult res2 = premiumCalculator.calculate(r2, mockRates);
 
-        // Mileage 10000 (1.00)
+        // 走行距離 10000km（係数1.00）
         QuoteCreateRequest r3 = createBaseRequest();
         r3.setAnnualMileage(10000);
         QuoteCalculationResult res3 = premiumCalculator.calculate(r3, mockRates);
 
-        // Mileage 10001 (1.15)
+        // 走行距離 10001km（係数1.15）
         QuoteCreateRequest r4 = createBaseRequest();
         r4.setAnnualMileage(10001);
         QuoteCalculationResult res4 = premiumCalculator.calculate(r4, mockRates);
 
-        // 5000 (0.95): base without mileage was 32400. 32400 * 0.95 = 30780. 30780 + 5000 = 35780.
+        // 5000km（係数0.95）：走行距離係数適用前ベース32400。32400 * 0.95 = 30780。30780 + 5000 = 35780
         assertEquals(35780, res1.getAnnualPremium());
 
-        // 5001 (1.00): base 32400 + 5000 = 37400.
+        // 5001km（係数1.00）：ベース32400 + 5000 = 37400
         assertEquals(37400, res2.getAnnualPremium());
 
-        // 10000 (1.00): base 32400 + 5000 = 37400.
+        // 10000km（係数1.00）：ベース32400 + 5000 = 37400
         assertEquals(37400, res3.getAnnualPremium());
 
-        // 10001 (1.15): 32400 * 1.15 = 37260. 37260 + 5000 = 42260.
+        // 10001km（係数1.15）：32400 * 1.15 = 37260。37260 + 5000 = 42260
         assertEquals(42260, res4.getAnnualPremium());
     }
 
     @Test
     void testUT005_GradeBoundaries() {
-        // Grade 5 (1.30)
+        // 等級 5等級（係数1.30）
         QuoteCreateRequest r1 = createBaseRequest();
         r1.setGrade(5);
         QuoteCalculationResult res1 = premiumCalculator.calculate(r1, mockRates);
 
-        // Grade 6 (1.10)
+        // 等級 6等級（係数1.10）
         QuoteCreateRequest r2 = createBaseRequest();
         r2.setGrade(6);
         QuoteCalculationResult res2 = premiumCalculator.calculate(r2, mockRates);
 
-        // Grade 10 (1.10)
+        // 等級 10等級（係数1.10）
         QuoteCreateRequest r3 = createBaseRequest();
         r3.setGrade(10);
         QuoteCalculationResult res3 = premiumCalculator.calculate(r3, mockRates);
 
-        // Grade 11 (0.95)
+        // 等級 11等級（係数0.95）
         QuoteCreateRequest r4 = createBaseRequest();
         r4.setGrade(11);
         QuoteCalculationResult res4 = premiumCalculator.calculate(r4, mockRates);
 
-        // Grade 15 (0.95)
+        // 等級 15等級（係数0.95）
         QuoteCreateRequest r5 = createBaseRequest();
         r5.setGrade(15);
         QuoteCalculationResult res5 = premiumCalculator.calculate(r5, mockRates);
 
-        // Grade 16 (0.80)
+        // 等級 16等級（係数0.80）
         QuoteCreateRequest r6 = createBaseRequest();
         r6.setGrade(16);
         QuoteCalculationResult res6 = premiumCalculator.calculate(r6, mockRates);
 
-        // Base without grade factor (grade 20 was 0.8): basePart = 32400 / 0.8 = 40500.
-        // Grade 5 (1.3): 40500 * 1.3 = 52650. 52650 + 5000 = 57650.
+        // 等級係数除外ベース（20等級は係数0.8）：32400 ÷ 0.8 = 40500
+        // 5等級（係数1.30）：40500 * 1.3 = 52650。52650 + 5000 = 57650
         assertEquals(57650, res1.getAnnualPremium());
 
-        // Grade 6 (1.1): 40500 * 1.1 = 44550. 44550 + 5000 = 49550.
+        // 6等級（係数1.10）：40500 * 1.1 = 44550。44550 + 5000 = 49550
         assertEquals(49550, res2.getAnnualPremium());
 
-        // Grade 10 (1.1): 44550 + 5000 = 49550.
+        // 10等級（係数1.10）：6等級と同一係数。44550 + 5000 = 49550
         assertEquals(49550, res3.getAnnualPremium());
 
-        // Grade 11 (0.95): 40500 * 0.95 = 38475. 38475 + 5000 = 43475. 43475 rounded to 10 yen is 43480.
+        // 11等級（係数0.95）：40500 * 0.95 = 38475。38475 + 5000 = 43475。10円未満四捨五入 → 43480
         assertEquals(43480, res4.getAnnualPremium());
 
-        // Grade 15 (0.95): 43480.
+        // 15等級（係数0.95）：11等級と同一係数 → 43480
         assertEquals(43480, res5.getAnnualPremium());
 
-        // Grade 16 (0.80): 40500 * 0.8 = 32400. 32400 + 5000 = 37400.
+        // 16等級（係数0.80）：40500 * 0.8 = 32400。32400 + 5000 = 37400
         assertEquals(37400, res6.getAnnualPremium());
     }
 
     @Test
     void testUT006_RoundingHandling() {
         QuoteCreateRequest request = createBaseRequest();
-        // Set values that yield decimal figures:
-        // age 18 (1.6), green (1.1), business (1.25), mileage 15000 (1.15), anyone (1.2), grade 3 (1.3), accident 3 (1.2), SUV (1.15).
-        // multiplied = 50000 * 1.6 * 1.1 * 1.25 * 1.15 * 1.2 * 1.3 * 1.2 * 1.15 = 272329.2
+        // 端数が発生する入力値を設定する：
+        // 18歳（1.6）、グリーン（1.1）、業務（1.25）、15000km（1.15）、限定なし（1.2）、3等級（1.3）、事故3年（1.2）、SUV（1.15）
+        // 係数積算：50000 * 1.6 * 1.1 * 1.25 * 1.15 * 1.2 * 1.3 * 1.2 * 1.15 = 272329.2
         request.setDriverAge(18);
         request.setLicenseColor("GREEN");
         request.setUsageType("BUSINESS");

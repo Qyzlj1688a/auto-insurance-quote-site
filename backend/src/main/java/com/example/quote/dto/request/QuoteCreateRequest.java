@@ -27,10 +27,10 @@ public class QuoteCreateRequest {
 
     @NotNull(message = "年間走行距離は必須項目です。")
     @Min(value = 0, message = "年間走行距離は0〜30000kmの間で入力してください。")
-    @Max(value = 30000, message = "年間走行距離は0〜30000kmの間为入力してください。")
+    @Max(value = 30000, message = "年間走行距離は0〜30000kmの間で入力してください。")
     private Integer annualMileage;
 
-    @NotBlank(message = "運転者範囲は必须項目です。")
+    @NotBlank(message = "運転者範囲は必須項目です。")
     @Pattern(regexp = "SELF|COUPLE|FAMILY|ANYONE", message = "運転者範囲が正しくありません。")
     private String driverRange;
 
@@ -50,7 +50,7 @@ public class QuoteCreateRequest {
     private String maker;
 
     @NotBlank(message = "車名は必須項目です。")
-    @Size(max = 50, message = "車名は50文字以内で输入してください。")
+    @Size(max = 50, message = "車名は50文字以内で入力してください。")
     private String carName;
 
     @NotBlank(message = "初度登録年月は必須項目です。")

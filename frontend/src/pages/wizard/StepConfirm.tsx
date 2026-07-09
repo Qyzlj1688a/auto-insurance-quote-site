@@ -96,7 +96,7 @@ export const StepConfirm: React.FC<StepConfirmProps> = ({
   return (
     <div className="wizard-card">
       <h2 className="step-title">入力確認</h2>
-      <p className="step-desc">入力内容と概算保険料をご確認ください。</p>
+      <p className="step-desc">入力内容をご確認の上、「見積を作成する」ボタンを押してください。</p>
 
       {errorMessage && (
         <div className="validation-bar">
@@ -226,13 +226,9 @@ export const StepConfirm: React.FC<StepConfirmProps> = ({
 
         {/* 右側カラム：お見積り実行サイドバー */}
         <div className="price-sidebar">
-          <div className="price-sidebar-title">概算保険料</div>
-          <div className="price-row" style={{ display: "flex", alignItems: "baseline" }}>
-            <span className="price-amount">??,???</span>
-            <span className="price-unit"> 円</span>
-          </div>
-          <div className="price-note">
-            ※年間保険料および月額保険料の詳細は、見積作成ボタンをクリックした後に算出されます。
+          <div className="price-sidebar-title">保険料の確認</div>
+          <div className="price-note" style={{ marginBottom: "12px" }}>
+            ※「見積を作成する」ボタンを押すと、入力内容に基づいた年間・月額保険料が算出されます。
           </div>
           <button
             className="btn btn-primary"
