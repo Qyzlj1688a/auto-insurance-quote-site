@@ -9,4 +9,4 @@ frontend/vite.config.d.ts
 .vscode/
 dome/
 *.log
-.env
+
