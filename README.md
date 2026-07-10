@@ -51,6 +51,8 @@
 ├─ backend/             # Spring Boot バックエンドプロジェクト
 ├─ frontend/            # React フロントエンドプロジェクト
 ├─ db/                  # データベース初期化SQLスクリプト (schema.sql, data.sql)
+├─ .env                 # 課題検証用の環境変数（Docker Compose が自動読み込み）
+├─ .env.example         # .env の参考テンプレート
 └─ docker-compose.yml   # Docker Compose 構成ファイル
 ```
 
@@ -58,19 +60,30 @@
 
 ## 起動方法
 
-### 0. 環境変数ファイル（.env）の準備【初回のみ・必須】
+### 0. 環境変数ファイル（.env）
 
-JWT署名用シークレットなどの機密情報をリポジトリに直接コミットしないため、
-`.env.example` をコピーして `.env` を作成し、値を設定してください（`.env` は `.gitignore` 対象）。
+本リポジトリには、レビュー担当者が追加作業なしで起動できるよう、
+**課題検証用の `.env` を同梱**しています。`docker compose up` 実行時に自動読み込みされます。
 
-```bash
-cp .env.example .env        # Linux/macOS
-Copy-Item .env.example .env # Windows PowerShell
-```
+※ 同梱されている値は**本番運用向けの機密情報ではなく**、採用課題の動作確認用です。
 
-`.env` 内の `JWT_SECRET` を32文字以上のランダムな文字列に変更してください
-（例: `openssl rand -base64 48`）。この手順を行わない場合、`JWT_SECRET` が空文字となり
-バックエンドがJWT署名鍵の生成に失敗して起動できません。
+ローカル起動（`http://localhost:5173`）では、`.env` をそのまま使用して問題ありません。
+
+同梱 `.env` の主な設定値：
+
+| 変数名 | 用途 | 同梱値の概要 |
+| --- | --- | --- |
+| `JWT_SECRET` | 管理者JWT署名鍵 | 課題検証用デフォルト値 |
+| `POSTGRES_*` | DB接続情報 | 開発用デフォルト（`quote_db` / `quote_user`） |
+| `CORS_ALLOWED_ORIGINS` | ブラウザからの許可オリジン | `http://localhost:5173` |
+
+#### 公開サーバーでデプロイする場合
+
+`localhost` 以外のURL（例: `http://<サーバーIP>:5173`）からアクセスする場合は、
+**同梱 `.env` の `CORS_ALLOWED_ORIGINS` を編集**し、実際にブラウザでアクセスするURLを追加してください。
+
+```env
+CORS_ALLOWED_ORIGINS=http://localhost:5173,http://<サーバーIP>:5173
 
 ### 1. Docker Compose での一括起動（推奨）
 
@@ -149,10 +162,11 @@ npm run dev
   個人識別情報は保存していないため、漏洩範囲は保険条件と金額に限られる）。本課題では本人確認（対象外
   事項）を前提としないためこの仕様を採用しているが、本番運用に転用する場合は、番号の非連続化
   （UUID化等）や、発行直後のみ照会可能とする等の追加対策が必要。
-- **CORS許可オリジンは開発環境向けデフォルト**: `app.cors.allowed-origins`（既定値
-  `http://localhost:5173`）で管理しており、本番相当のドメインで運用する場合は環境変数
-  `CORS_ALLOWED_ORIGINS` で上書きすること。
-
+- **`.env` は課題検証用設定を同梱**: 即時起動を優先し、リポジトリに `.env` を含めている。
+  値は本番運用向けではない。公開サーバーで別URLから利用する場合は `.env` の
+  `CORS_ALLOWED_ORIGINS` を編集すること（詳細は「起動方法 > 環境変数ファイル（.env）」を参照）。
+- **CORS許可オリジンは localhost 向けデフォルト**: 同梱 `.env` では `http://localhost:5173` を
+  許可している。localhost 以外のURLでアクセスする場合は `CORS_ALLOWED_ORIGINS` へ実際のURLを追加する。
 ---
 
 ## テスト実施結果
