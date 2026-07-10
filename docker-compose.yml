@@ -35,6 +35,7 @@ services:
       # 未設定時は採用課題の動作確認用デフォルト値を使用し、初回起動時に管理者ログインが
       # 失敗しないようにする。
       JWT_SECRET: ${JWT_SECRET:-T&S_Auto_Insurance_Secret_Key_2026_06_25}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173}
     ports:
       - "8080:8080"
     healthcheck:
