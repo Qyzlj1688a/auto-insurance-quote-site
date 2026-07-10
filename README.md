@@ -60,6 +60,8 @@
 
 ## 起動方法
 
+
+
 ### 0. 環境変数ファイル（.env）
 
 本リポジトリには、レビュー担当者が追加作業なしで起動できるよう、
@@ -82,8 +84,20 @@
 `localhost` 以外のURL（例: `http://<サーバーIP>:5173`）からアクセスする場合は、
 **同梱 `.env` の `CORS_ALLOWED_ORIGINS` を編集**し、実際にブラウザでアクセスするURLを追加してください。
 
+
+
 ```env
 CORS_ALLOWED_ORIGINS=http://localhost:5173,http://<サーバーIP>:5173
+```
+
+設定変更後は、コンテナを再作成してください。
+
+```bash
+docker compose down
+docker compose up --build -d
+```
+
+参考用に `.env.example` も同梱しています。通常は `.env` をそのまま利用すれば足ります。
 
 ### 1. Docker Compose での一括起動（推奨）
 
